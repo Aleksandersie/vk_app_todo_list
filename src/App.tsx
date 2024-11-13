@@ -117,36 +117,28 @@ export const App = () => {
   return (
     <AppRoot>
       <SplitLayout>
-        <SplitCol autoSpaced style={{ marginTop: "20px" }}>
+        <SplitCol autoSpaced >
           <View activePanel={activePanel}>
             <Panel id="main" mode={"card"}>
-              <PanelHeader>
-                <PanelHeaderContent
-                  before={
-                    <Flex gap={"l"} align={"center"} justify={"space-between"}>
-                      <Flex gap={"s"} align={"center"} justify={"center"}>
-                        <Avatar size={36} src={fetchedUser?.photo_200} />
-                        <Div>{"Мои задачи и заметки"}</Div>
-                        <Button
-                          onClick={() => setActivePanel("add")}
-                          align={"left"}
-                        >
-                          <Flex align={"center"} gap={"s"}>
-                            <p>Добавить</p>
-                            <Icon16ListPlusOutline
-                              width={24}
-                              height={24}
-                              color={"#4C75A3"}
-                              style={{ cursor: "pointer" }}
-                            />
-                          </Flex>
-                        </Button>
-                      </Flex>
-                    </Flex>
-                  }
-                ></PanelHeaderContent>
-              </PanelHeader>
-              <Group className={"panelHeight"}>
+              <Group className={"panelHeight"} style={{ padding: "16px" }}>
+                <Flex
+                  align={"center"}
+                  justify={"space-between"}
+                  style={{ marginBottom: "16px", marginTop: "25px" }}
+                >
+                  <Flex gap={"s"} align={"center"}>
+                    <Avatar size={36} src={fetchedUser?.photo_200} />
+                    <Div>
+                      {"Привет, " + (fetchedUser?.first_name || "Пользователь")}
+                    </Div>
+                  </Flex>
+                </Flex>
+                <Button
+                  onClick={() => setActivePanel("add")}
+                  style={{ marginBottom: "25px" }}
+                >
+                  Добавить задачу
+                </Button>
                 <Flex direction={"column"} gap={"xl"}>
                   {todos &&
                     todos.map((todo, index) => (
@@ -160,7 +152,13 @@ export const App = () => {
                                 __html: todo.text.replace(/\n/g, "<br/>"),
                               }}
                             />
-                            <div style={{ fontSize: '12px', color: '#888', marginTop: '8px' }}>
+                            <div
+                              style={{
+                                fontSize: "12px",
+                                color: "#888",
+                                marginTop: "8px",
+                              }}
+                            >
                               {`Создано: ${new Date(todo.createdAt).toLocaleDateString()}`}
                             </div>
                           </div>
@@ -186,22 +184,12 @@ export const App = () => {
               </Group>
             </Panel>
             <Panel id="add" mode={"card"}>
-              <PanelHeader>
-                <PanelHeaderContent
-                  before={
-                    <Flex gap={"l"} align={"center"} justify={"space-between"}>
-                      <Flex gap={"s"} align={"center"} justify={"center"}>
-                        <PanelHeaderBack
-                          label="Назад"
-                          onClick={() => setActivePanel("main")}
-                        />
-                        <Div>{"Мои задачи и заметки"}</Div>
-                      </Flex>
-                    </Flex>
-                  }
-                ></PanelHeaderContent>
-              </PanelHeader>
-              <Group className={"panelHeight"}>
+              <Group className={"panelHeight"} style={{ padding: "16px" }}>
+                <PanelHeaderBack
+                  label="Назад"
+                  onClick={() => setActivePanel("main")}
+                  style={{ marginBottom: "16px", marginTop: "25px" }}
+                />
                 <Input
                   value={currentTodo.title}
                   onChange={(e) =>
@@ -224,22 +212,12 @@ export const App = () => {
               </Group>
             </Panel>
             <Panel id="edit" mode={"card"}>
-              <PanelHeader>
-                <PanelHeaderContent
-                  before={
-                    <Flex gap={"l"} align={"center"} justify={"space-between"}>
-                      <Flex gap={"s"} align={"center"} justify={"center"}>
-                        <PanelHeaderBack
-                          label="Назад"
-                          onClick={() => setActivePanel("main")}
-                        />
-                        <Div>{"Мои задачи и заметки"}</Div>
-                      </Flex>
-                    </Flex>
-                  }
-                ></PanelHeaderContent>
-              </PanelHeader>
-              <Group className={"panelHeight"}>
+              <Group className={"panelHeight"} style={{ padding: "16px" }}>
+                <PanelHeaderBack
+                  label="Назад"
+                  onClick={() => setActivePanel("main")}
+                  style={{ marginBottom: "16px", marginTop: "25px" }}
+                />
                 <Input
                   value={todoToEdit.title}
                   onChange={(e) =>
