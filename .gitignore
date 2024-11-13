@@ -1,0 +1,5 @@
+vk-hosting-config.json
+build/
+.idea/
+.env
+node_modules/
