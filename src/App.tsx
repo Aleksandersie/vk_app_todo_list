@@ -7,14 +7,11 @@ import {
   SplitCol,
   AppRoot,
   Panel,
-  PanelHeader,
   Group,
-  Cell,
   Avatar,
   Button,
   Flex,
   Banner,
-  PanelHeaderContent,
   Div,
   Textarea,
   PanelHeaderBack,
@@ -25,7 +22,6 @@ import {
   Input,
 } from "@vkontakte/vkui";
 import { Todo } from "./types/todo.model.ts";
-import { Icon16ListPlusOutline } from "@vkontakte/icons";
 import "./style.css";
 
 export const App = () => {
@@ -117,7 +113,7 @@ export const App = () => {
   return (
     <AppRoot>
       <SplitLayout>
-        <SplitCol autoSpaced >
+        <SplitCol autoSpaced>
           <View activePanel={activePanel}>
             <Panel id="main" mode={"card"}>
               <Group className={"panelHeight"} style={{ padding: "16px" }}>
@@ -140,7 +136,7 @@ export const App = () => {
                   Добавить задачу
                 </Button>
                 <Flex direction={"column"} gap={"xl"}>
-                  {todos &&
+                  {todos && todos.length > 0 ? (
                     todos.map((todo, index) => (
                       <Banner
                         key={index}
@@ -179,7 +175,12 @@ export const App = () => {
                           </ButtonGroup>
                         }
                       />
-                    ))}
+                    ))
+                  ) : (
+                    <Div style={{ textAlign: "center", color: "#818C99" }}>
+                      Список задач пуст. Добавьте свою первую задачу!
+                    </Div>
+                  )}
                 </Flex>
               </Group>
             </Panel>
@@ -190,11 +191,23 @@ export const App = () => {
                   onClick={() => setActivePanel("main")}
                   style={{ marginBottom: "16px", marginTop: "25px" }}
                 />
+                <Div
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    marginBottom: "16px",
+                    textAlign: "center",
+                  }}
+                >
+                  Создание новой задачи
+                </Div>
                 <Input
                   value={currentTodo.title}
                   onChange={(e) =>
                     setCurrentTodo({ ...currentTodo, title: e.target.value })
                   }
+                  placeholder="Введите название задачи"
+                  top="Название задачи"
                   style={{ marginBottom: "16px", marginTop: "16px" }}
                 />
                 <Textarea
@@ -204,6 +217,8 @@ export const App = () => {
                   onChange={(e) =>
                     setCurrentTodo({ ...currentTodo, text: e.target.value })
                   }
+                  placeholder="Введите описание задачи"
+                  top="Описание задачи"
                   style={{ marginBottom: "16px" }}
                 />
                 <Button onClick={() => addTodo()} style={{ marginTop: "10px" }}>
@@ -218,11 +233,23 @@ export const App = () => {
                   onClick={() => setActivePanel("main")}
                   style={{ marginBottom: "16px", marginTop: "25px" }}
                 />
+                <Div
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    marginBottom: "16px",
+                    textAlign: "center",
+                  }}
+                >
+                  Редактирование задачи
+                </Div>
                 <Input
                   value={todoToEdit.title}
                   onChange={(e) =>
                     setTodoToEdit({ ...todoToEdit, title: e.target.value })
                   }
+                  placeholder="Введите название задачи"
+                  top="Название задачи"
                   style={{ marginBottom: "16px", marginTop: "16px" }}
                 />
                 <Textarea
@@ -232,6 +259,8 @@ export const App = () => {
                   onChange={(e) =>
                     setTodoToEdit({ ...todoToEdit, text: e.target.value })
                   }
+                  placeholder="Введите описание задачи"
+                  top="Описание задачи"
                   style={{ marginBottom: "16px" }}
                 />
                 <Button onClick={() => editTodo()}>Сохранить</Button>
@@ -245,7 +274,7 @@ export const App = () => {
         <ModalCard
           id={"delete"}
           onClose={() => setActiveModal(null)}
-          header="Уалить"
+          header="Удалить"
           subheader="Вы уверенны что хотите удалить эту запись?"
           actions={
             <Fragment>
