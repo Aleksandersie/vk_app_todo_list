@@ -20,7 +20,14 @@ import {
   Spacing,
   ModalRoot,
   Input,
+  Placeholder,
 } from "@vkontakte/vkui";
+import {
+  Icon24AddSquareOutline,
+  Icon56GhostOutline,
+  Icon28EditOutline,
+  Icon28DeleteOutline,
+} from "@vkontakte/icons";
 import { Todo } from "./types/todo.model.ts";
 import "./style.css";
 
@@ -49,7 +56,6 @@ export const App = () => {
       const user = await bridge.send("VKWebAppGetUserInfo");
       bridge.send("VKWebAppStorageGet", { keys: ["todos"] }).then((data) => {
         const todos = data.keys.filter((item) => item.key === "todos");
-        console.log("load", todos);
         setTodos(JSON.parse(todos[0].value));
       });
       setUser(user);
@@ -58,7 +64,6 @@ export const App = () => {
   }, []);
 
   const storeTodo = async (arr: Todo[]) => {
-    console.log("in fn", todos);
     await bridge.send("VKWebAppStorageSet", {
       key: "todos",
       value: JSON.stringify(arr),
@@ -135,24 +140,32 @@ export const App = () => {
                 >
                   Добавить задачу
                 </Button>
-                <Flex direction={"column"} gap={"xl"}>
+                <Flex direction={"column"} gap={"m"}>
                   {todos && todos.length > 0 ? (
                     todos.map((todo, index) => (
                       <Banner
                         key={index}
-                        header={todo.title}
+                        header={
+                          <span style={{ fontSize: "18px", fontWeight: "600" }}>
+                            {todo.title}
+                          </span>
+                        }
                         subheader={
-                          <div>
+                          <div style={{ marginTop: "8px" }}>
                             <div
+                              style={{
+                                fontSize: "15px",
+                                lineHeight: "20px",
+                              }}
                               dangerouslySetInnerHTML={{
                                 __html: todo.text.replace(/\n/g, "<br/>"),
                               }}
                             />
                             <div
                               style={{
-                                fontSize: "12px",
-                                color: "#888",
-                                marginTop: "8px",
+                                fontSize: "13px",
+                                color: "#818C99",
+                                marginTop: "12px",
                               }}
                             >
                               {`Создано: ${new Date(todo.createdAt).toLocaleDateString()}`}
@@ -160,26 +173,38 @@ export const App = () => {
                           </div>
                         }
                         actions={
-                          <ButtonGroup>
+                          <ButtonGroup mode="horizontal" gap="m">
                             <Button
                               onClick={() => {
                                 setTodoToEdit(todo);
                                 setActivePanel("edit");
                               }}
+                              before={<Icon28EditOutline />}
+                              size="m"
+                              style={{ minWidth: "auto" }}
                             >
                               Редактировать
                             </Button>
-                            <Button onClick={() => deleteConfirmation(todo.id)}>
+                            <Button
+                              onClick={() => deleteConfirmation(todo.id)}
+                              before={<Icon28DeleteOutline />}
+                              size="m"
+                              mode="destructive"
+                            >
                               Удалить
                             </Button>
                           </ButtonGroup>
                         }
+                        mode="shadow"
                       />
                     ))
                   ) : (
-                    <Div style={{ textAlign: "center", color: "#818C99" }}>
-                      Список задач пуст. Добавьте свою первую задачу!
-                    </Div>
+                    <Placeholder
+                      icon={<Icon56GhostOutline style={{ color: "#818C99" }} />}
+                      header="Список задач пуст"
+                    >
+                      Добавьте свою первую задачу, нажав на кнопку выше
+                    </Placeholder>
                   )}
                 </Flex>
               </Group>
@@ -189,41 +214,50 @@ export const App = () => {
                 <PanelHeaderBack
                   label="Назад"
                   onClick={() => setActivePanel("main")}
-                  style={{ marginBottom: "16px", marginTop: "25px" }}
                 />
                 <Div
                   style={{
-                    fontSize: "20px",
+                    fontSize: "24px",
                     fontWeight: "bold",
-                    marginBottom: "16px",
+                    marginBottom: "24px",
                     textAlign: "center",
                   }}
                 >
-                  Создание новой задачи
+                  Создание задачи
                 </Div>
-                <Input
-                  value={currentTodo.title}
-                  onChange={(e) =>
-                    setCurrentTodo({ ...currentTodo, title: e.target.value })
-                  }
-                  placeholder="Введите название задачи"
-                  top="Название задачи"
-                  style={{ marginBottom: "16px", marginTop: "16px" }}
-                />
-                <Textarea
-                  cols={20}
-                  rows={3}
-                  value={currentTodo.text}
-                  onChange={(e) =>
-                    setCurrentTodo({ ...currentTodo, text: e.target.value })
-                  }
-                  placeholder="Введите описание задачи"
-                  top="Описание задачи"
-                  style={{ marginBottom: "16px" }}
-                />
-                <Button onClick={() => addTodo()} style={{ marginTop: "10px" }}>
-                  Сохранить
-                </Button>
+                <Div>
+                  <Input
+                    value={currentTodo.title}
+                    onChange={(e) =>
+                      setCurrentTodo({
+                        ...currentTodo,
+                        title: e.target.value,
+                      })
+                    }
+                    placeholder="Например: Купить продукты"
+                    top="Название задачи"
+                    style={{ marginBottom: "16px", marginTop: "16px" }}
+                  />
+                  <Spacing size={16} />
+                  <Textarea
+                    value={currentTodo.text}
+                    onChange={(e) =>
+                      setCurrentTodo({ ...currentTodo, text: e.target.value })
+                    }
+                    placeholder="Опишите задачу подробнее..."
+                    rows={5}
+                    top="Описание задачи"
+                    style={{ marginBottom: "16px" }}
+                  />
+                  <Spacing size={16} />
+                  <Button
+                    size="m"
+                    onClick={() => addTodo()}
+                    before={<Icon24AddSquareOutline />}
+                  >
+                    Создать задачу
+                  </Button>
+                </Div>
               </Group>
             </Panel>
             <Panel id="edit" mode={"card"}>
@@ -263,7 +297,13 @@ export const App = () => {
                   top="Описание задачи"
                   style={{ marginBottom: "16px" }}
                 />
-                <Button onClick={() => editTodo()}>Сохранить</Button>
+                <Button
+                  onClick={() => editTodo()}
+                  size="m"
+                  before={<Icon28EditOutline />}
+                >
+                  Сохранить
+                </Button>
               </Group>
             </Panel>
           </View>
@@ -281,8 +321,9 @@ export const App = () => {
               <Spacing size={16} />
               <Button
                 size="l"
-                mode="primary"
+                mode="destructive"
                 stretched
+                before={<Icon28DeleteOutline />}
                 onClick={() => deleteTodo()}
               >
                 Да
